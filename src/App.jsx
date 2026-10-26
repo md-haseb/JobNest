@@ -1,9 +1,11 @@
+import Header from "./components/Header.jsx";
+
 function App() {
   return (
-    <div className="app">
-      <h1>JobNest</h1>
-      <p>Find your next opportunity.</p>
-    </div>
+    <>
+      <h2>Hello There</h2>
+      <Header />
+    </>
   );
 }
 
