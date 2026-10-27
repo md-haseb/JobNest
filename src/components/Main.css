@@ -1,0 +1,94 @@
+#jobnest-main-container {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 5%;
+  align-items: start;
+}
+
+#filter-container {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.filter-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-icon-and-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-icon-and-text h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.filter-clear-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #242590;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-group h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #242590;
+}
+
+#search-and-job-listing-container {
+  min-width: 0;
+}
+
+.filter-location-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-location-select:focus {
+  outline: 2px solid #242590;
+  outline-offset: 2px;
+}

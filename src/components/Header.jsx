@@ -1,7 +1,7 @@
 import { NavLink, Link } from "react-router-dom";
 import jobnestLogo from "../assets/images/jobnest-header-desktop.png";
 import "./Header.css";
-import { Search, Bookmark, ClipboardList } from "lucide-react";
+import { Search, Bookmark, ClipboardList, UserRound } from "lucide-react";
 
 function Header() {
   return (
@@ -18,7 +18,7 @@ function Header() {
       <nav id="header-navbar-container" aria-label="Main navigation">
         <ul id="header-nav-list">
           <li>
-            <NavLink to="/" className="header-nav-link">
+            <NavLink to="/" end className="header-nav-link">
               <Search size={18} />
               <span>Find Jobs</span>
             </NavLink>
@@ -40,9 +40,10 @@ function Header() {
         </ul>
       </nav>
       <div className="header-authentication-container">
-        <button className="header-authentication-btn" type="button">
-          Log in / Register
-        </button>
+        <Link to="/login" className="header-auth-link">
+          <UserRound size={18} />
+          <span>Log in / Register</span>
+        </Link>
       </div>
     </header>
   );
