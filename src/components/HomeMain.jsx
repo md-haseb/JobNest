@@ -1,7 +1,7 @@
-import "./Main.css";
+import "./HomeMain.css";
 import { SlidersHorizontal } from "lucide-react";
 
-function Main() {
+function HomeMain() {
   return (
     <main id="jobnest-main-container">
       <section id="filter-container" aria-labelledby="filter-heading">
@@ -194,4 +194,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default HomeMain;
