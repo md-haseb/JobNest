@@ -1,0 +1,75 @@
+#jobnest-header {
+  min-height: 80px;
+  padding: 12px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#header-logo-container {
+  flex-shrink: 0;
+}
+
+.header-logo-img {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+}
+
+#header-navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#header-nav-list {
+  list-style: none;
+  display: flex;
+  gap: 36px;
+  padding: 0;
+  margin: 0;
+}
+
+.header-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  text-decoration: none;
+  color: #1f2937;
+}
+
+/* Navigation underline */
+.header-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 105%;
+  height: 3px;
+  background-color: #242590;
+  border-radius: 2px;
+
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+/* Active navigation underline */
+.header-nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.header-auth-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  text-decoration: none;
+  border: 1px solid #242590;
+  border-radius: 8px;
+  color: #242590;
+  font-weight: 500;
+}

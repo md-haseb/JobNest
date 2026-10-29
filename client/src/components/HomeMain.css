@@ -1,0 +1,279 @@
+#jobnest-main-container {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px 5%;
+  align-items: start;
+}
+
+#filter-container {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.filter-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-icon-and-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-icon-and-text h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.filter-clear-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #242590;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-group h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #242590;
+}
+
+#search-and-job-listing-container {
+  min-width: 0;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: 2px solid #242590;
+  outline-offset: 2px;
+}
+
+.filter-salary-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.filter-input:focus {
+  outline: 2px solid #242590;
+  outline-offset: 2px;
+}
+
+.filter-actions {
+  padding-top: 18px;
+}
+
+.filter-apply-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #242590;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.filter-apply-btn:hover {
+  background-color: #1c1c70;
+}
+
+/* Right side: search and job listings */
+#search-and-job-listing-container {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 1. Search bar container */
+.job-search-container {
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #e8e8ff;
+  /* background-color: #f5f5ff; */
+}
+
+.job-search-container h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.3;
+  color: #1f2937;
+}
+
+.job-search-container p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+/* Search input and button */
+.job-search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.job-search-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.job-search-form input:focus {
+  outline: 2px solid #242590;
+  outline-offset: 1px;
+}
+
+.job-search-form button {
+  flex-shrink: 0;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 6px;
+  background-color: #242590;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.job-search-form button:hover {
+  background-color: #1c1c70;
+}
+
+/* 2. Results toolbar */
+.job-results-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.job-results-count {
+  margin: 0;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Sort by dropdown */
+.job-sort-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.job-sort-container label {
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.job-sort-container select {
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.job-sort-container select:focus {
+  outline: 2px solid #242590;
+  outline-offset: 1px;
+}
+
+/* 3. Job listings container */
+#job-listings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* 4. Load More Jobs button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.load-more-container button {
+  padding: 12px 24px;
+  border: 1px solid #242590;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #242590;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.load-more-container button:hover {
+  background-color: #242590;
+  color: #ffffff;
+}
