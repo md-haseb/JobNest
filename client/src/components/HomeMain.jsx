@@ -1,5 +1,6 @@
 import "./HomeMain.css";
 import { SlidersHorizontal } from "lucide-react";
+import JobCard from "./JobCard/JobCard.jsx";
 
 function HomeMain() {
   return (
@@ -183,6 +184,9 @@ function HomeMain() {
         {/* 3. Job listings */}
         <div id="job-listings-container">
           {/* Render reusable JobCard components here */}
+          <JobCard />
+          <JobCard />
+          <JobCard />
         </div>
 
         {/* 4. Load more jobs */}

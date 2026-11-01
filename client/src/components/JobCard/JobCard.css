@@ -1,0 +1,167 @@
+.job-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 40px;
+  align-items: center;
+  gap: 24px;
+
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  border-color: #c7c9e8;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Left section */
+
+.job-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.company-logo {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.company-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.job-details {
+  min-width: 0;
+}
+
+.job-title {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #202124;
+}
+
+.company-name {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #5f6368;
+}
+
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.job-meta span {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Middle section */
+
+.job-extra {
+  min-width: 170px;
+  text-align: right;
+}
+
+.job-salary {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #242590;
+}
+
+.job-posted {
+  margin: 0;
+  font-size: 13px;
+  color: #858585;
+}
+
+/* Right section */
+
+.save-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+  padding: 0;
+
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  color: #6b7280;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.save-button:hover {
+  color: #242590;
+  background-color: #f3f3ff;
+  border-color: #242590;
+}
+
+/* Responsive design */
+
+@media (max-width: 650px) {
+  .job-card {
+    grid-template-columns: minmax(0, 1fr) 38px;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .job-info {
+    grid-column: 1 / -1;
+  }
+
+  .job-extra {
+    grid-column: 1;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .save-button {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .job-meta {
+    gap: 8px;
+  }
+
+  .job-meta span {
+    font-size: 12px;
+  }
+
+  .job-title {
+    font-size: 15px;
+  }
+
+  .job-extra {
+    min-width: 0;
+  }
+
+  .job-salary {
+    font-size: 13px;
+  }
+}
