@@ -1,48 +1,74 @@
 import "./JobCard.css";
 
-function JobCard() {
+// function JobCard() {
+//   return (
+//     <article className="job-card">
+//       {/* Left: Job information */}
+//       <div className="job-info">
+//         <div className="company-logo">
+//           <img src="https://placehold.co/60x60" alt="Company logo" />
+//         </div>
+
+//         <div className="job-details">
+//           <h3 className="job-title">Frontend Developer</h3>
+
+//           <p className="company-name">Tech Solutions Ltd.</p>
+
+//           <div className="job-meta">
+//             <span>Dhaka, Bangladesh</span>
+//             <span>Full-time</span>
+//             <span>Entry Level</span>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Middle: Salary and posting date */}
+//       <div className="job-extra">
+//         <p className="job-salary">৳25,000 – 35,000 / month</p>
+//         <p className="job-posted">Posted 2 days ago</p>
+//       </div>
+
+//       {/* Right: Save button */}
+//       <button className="save-button" aria-label="Save job">
+//         <svg
+//           xmlns="http://www.w3.org/2000/svg"
+//           width="21"
+//           height="21"
+//           viewBox="0 0 24 24"
+//           fill="none"
+//           stroke="currentColor"
+//           stroke-width="1.8"
+//           stroke-linecap="round"
+//           stroke-linejoin="round"
+//         >
+//           <path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z" />
+//         </svg>
+//       </button>
+//     </article>
+//   );
+// }
+
+function JobCard({ job }) {
   return (
     <article className="job-card">
-      {/* Left: Job information */}
       <div className="job-info">
         <div className="company-logo">
           <img src="https://placehold.co/60x60" alt="Company logo" />
         </div>
 
         <div className="job-details">
-          <h3 className="job-title">Frontend Developer</h3>
+          <h3 className="job-title">{job.title}</h3>
 
-          <p className="company-name">Tech Solutions Ltd.</p>
+          <p className="company-name">{job.company}</p>
 
           <div className="job-meta">
-            <span>Dhaka, Bangladesh</span>
-            <span>Full-time</span>
-            <span>Entry Level</span>
+            <span>{job.location}</span>
           </div>
         </div>
       </div>
 
-      {/* Middle: Salary and posting date */}
-      <div className="job-extra">
-        <p className="job-salary">৳25,000 – 35,000 / month</p>
-        <p className="job-posted">Posted 2 days ago</p>
-      </div>
-
-      {/* Right: Save button */}
       <button className="save-button" aria-label="Save job">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="21"
-          height="21"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z" />
-        </svg>
+        {/* Bookmark icon */}
       </button>
     </article>
   );

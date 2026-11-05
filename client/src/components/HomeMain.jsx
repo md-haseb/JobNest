@@ -1,8 +1,29 @@
 import "./HomeMain.css";
 import { SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchJobs } from "../services/jobsService.js";
 import JobCard from "./JobCard/JobCard.jsx";
 
 function HomeMain() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadJobs() {
+      try {
+        const data = await fetchJobs();
+        setJobs(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadJobs();
+  }, []);
+
   return (
     <main id="jobnest-main-container">
       <section id="filter-container" aria-labelledby="filter-heading">
@@ -182,11 +203,21 @@ function HomeMain() {
         </div>
 
         {/* 3. Job listings */}
+        {/* <div id="job-listings-container">
+          <JobCard />
+          <JobCard />
+          <JobCard />
+        </div> */}
         <div id="job-listings-container">
-          {/* Render reusable JobCard components here */}
-          <JobCard />
-          <JobCard />
-          <JobCard />
+          {loading && <p>Loading jobs...</p>}
+
+          {error && <p>{error}</p>}
+
+          {!loading && !error && jobs.length === 0 && <p>No jobs found.</p>}
+
+          {!loading &&
+            !error &&
+            jobs.map((job) => <JobCard key={job.id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}
