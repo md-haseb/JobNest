@@ -2,6 +2,7 @@ import "./HomeMain.css";
 import { SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchJobs } from "../services/jobsService.js";
+import SkeletonJobCard from "./SkeletonJobCard";
 import JobCard from "./JobCard/JobCard.jsx";
 
 function HomeMain() {
@@ -210,7 +211,10 @@ function HomeMain() {
           <JobCard />
         </div> */}
         <div id="job-listings-container">
-          {loading && <p>Loading jobs...</p>}
+          {loading &&
+            Array.from({ length: 6 }).map((_, index) => (
+              <SkeletonJobCard key={index} />
+            ))}
 
           {error && <p>{error}</p>}
 

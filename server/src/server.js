@@ -23,6 +23,8 @@ app.get("/jobs", async (req, res) => {
 
     url.searchParams.append("date_posted", "month");
 
+    console.time("JSearch API");
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -35,7 +37,7 @@ app.get("/jobs", async (req, res) => {
     }
 
     const data = await response.json();
-    console.dir(data, { depth: null });
+    console.timeEnd("JSearch API");
 
     res.json({
       message: "Jobs fetched successfully!",
