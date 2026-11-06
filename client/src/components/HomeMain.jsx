@@ -13,6 +13,7 @@ function HomeMain() {
     async function loadJobs() {
       try {
         const data = await fetchJobs();
+        console.log(data);
         setJobs(data);
       } catch (error) {
         setError(error.message);
@@ -217,7 +218,7 @@ function HomeMain() {
 
           {!loading &&
             !error &&
-            jobs.map((job) => <JobCard key={job.id} job={job} />)}
+            jobs.map((job) => <JobCard key={job.job_id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}

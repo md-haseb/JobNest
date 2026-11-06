@@ -1,7 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
+const PORT = process.env.PORT || 5000;
 
 // Enable CORS for your React frontend
 app.use(
@@ -10,27 +11,44 @@ app.use(
   }),
 );
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Jobs fetched successfully!",
-    jobs: [
-      {
-        id: 1,
-        title: "Frontend Developer",
-        company: "ABC Technologies",
-        location: "Dhaka, Bangladesh",
-      },
-      {
-        id: 2,
-        title: "React Developer",
-        company: "XYZ Solutions",
-        location: "Remote",
-      },
-    ],
-  });
-});
+app.get("/jobs", async (req, res) => {
+  try {
+    const url = new URL("https://api.openwebninja.com/jsearch/search-v2");
 
-const PORT = 5000;
+    url.searchParams.append("query", "developer jobs in Bangladesh");
+
+    url.searchParams.append("country", "bd");
+
+    url.searchParams.append("num_pages", "1");
+
+    url.searchParams.append("date_posted", "month");
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "X-API-Key": process.env.JSEARCH_API_KEY,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`JSearch API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.dir(data, { depth: null });
+
+    res.json({
+      message: "Jobs fetched successfully!",
+      jobs: data.data,
+    });
+  } catch (error) {
+    console.error("Failed to fetch jobs:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch jobs",
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
