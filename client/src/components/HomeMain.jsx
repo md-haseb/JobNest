@@ -9,6 +9,24 @@ function HomeMain() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
+
+  // Search button handler
+  function handleSearch(e) {
+    e.preventDefault();
+    setActiveSearch(searchTerm.trim());
+  }
+
+  // Search logic
+  const filteredJobs = jobs.filter((job) => {
+    const searchContent = `
+      ${job.job_title}
+      ${job.employer_name}
+    `.toLowerCase();
+
+    return searchContent.includes(activeSearch.toLowerCase());
+  });
 
   useEffect(() => {
     async function loadJobs() {
@@ -180,12 +198,13 @@ function HomeMain() {
             Discover developer and technology opportunities across Bangladesh.
           </p>
 
-          <form className="job-search-form">
+          <form className="job-search-form" onSubmit={handleSearch}>
             <input
-              type="search"
-              name="search"
-              placeholder="Job title, skill, or company..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search jobs..."
             />
+
             <button type="submit">Search</button>
           </form>
         </div>
@@ -205,11 +224,6 @@ function HomeMain() {
         </div>
 
         {/* 3. Job listings */}
-        {/* <div id="job-listings-container">
-          <JobCard />
-          <JobCard />
-          <JobCard />
-        </div> */}
         <div id="job-listings-container">
           {loading &&
             Array.from({ length: 6 }).map((_, index) => (
@@ -218,11 +232,13 @@ function HomeMain() {
 
           {error && <p>{error}</p>}
 
-          {!loading && !error && jobs.length === 0 && <p>No jobs found.</p>}
+          {!loading && !error && filteredJobs.length === 0 && (
+            <p>No jobs found.</p>
+          )}
 
           {!loading &&
             !error &&
-            jobs.map((job) => <JobCard key={job.job_id} job={job} />)}
+            filteredJobs.map((job) => <JobCard key={job.job_id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}
