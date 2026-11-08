@@ -1,5 +1,5 @@
 import "./HomeMain.css";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchJobs } from "../services/jobsService.js";
 import SkeletonJobCard from "./SkeletonJobCard";
@@ -16,6 +16,11 @@ function HomeMain() {
   function handleSearch(e) {
     e.preventDefault();
     setActiveSearch(searchTerm.trim());
+  }
+
+  function handleClearSearch() {
+    setSearchTerm("");
+    setActiveSearch("");
   }
 
   // Search logic
@@ -199,11 +204,24 @@ function HomeMain() {
           </p>
 
           <form className="job-search-form" onSubmit={handleSearch}>
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search jobs..."
-            />
+            <div className="search-input-wrapper">
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search jobs..."
+              />
+
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="clear-search-btn"
+                  onClick={handleClearSearch}
+                  aria-label="Clear search"
+                >
+                  <X size={17} />
+                </button>
+              )}
+            </div>
 
             <button type="submit">Search</button>
           </form>
