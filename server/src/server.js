@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
+const normalizeJob = require("./utils/normalizeJob");
 
 let jobsCache = null;
 
@@ -50,9 +51,11 @@ app.get("/jobs", async (req, res) => {
 
     const data = await response.json();
 
+    const normalizedJobs = data.data.jobs.map(normalizeJob);
+
     // Store the response in cache
     jobsCache = {
-      data: data.data,
+      data: normalizedJobs,
       expiresAt: Date.now() + CACHE_DURATION,
     };
 

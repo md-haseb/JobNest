@@ -6,38 +6,40 @@ function JobCard({ job }) {
     <article className="job-card">
       <div className="job-info">
         <div className="company-logo">
-          {job.employer_logo ? (
-            <img src={job.employer_logo} alt={`${job.employer_name} logo`} />
+          {job.companyLogo ? (
+            <img src={job.companyLogo} alt={`${job.company} logo`} />
           ) : (
             <Building2 className="default-company-icon" size={25} />
           )}
         </div>
 
         <div className="job-details">
-          <h3 className="job-title">{job.job_title}</h3>
+          <h3 className="job-title">{job.title}</h3>
 
-          <p className="company-name">{job.employer_name}</p>
+          <p className="company-name">{job.company}</p>
 
           <div className="job-meta">
             <span>
-              {job.job_city ? `${job.job_city}, Bangladesh` : "Bangladesh"}
+              {job.location.city
+                ? `${job.location.city}, Bangladesh`
+                : "Bangladesh"}
             </span>
-            <span>{job.job_employment_type || "Full Time"}</span>
-            <span>{job.job_experience_level || ""}</span>
+            <span>{job.employmentType || "Full Time"}</span>
+            <span>{job.experienceLevel || ""}</span>
           </div>
         </div>
       </div>
 
       <div className="job-extra">
         <p className="job-salary">
-          {job.job_salary
-            ? job.job_salary
-            : job.job_min_salary && job.job_max_salary
-              ? `${job.job_min_salary} - ${job.job_max_salary}`
+          {job.salary.salary
+            ? job.salary.salary
+            : job.salary.min != null && job.salary.max != null
+              ? `${job.salary.min} - ${job.salary.max}`
               : "Negotiable"}
         </p>
 
-        <p className="job-posted">{job.job_posted_at}</p>
+        <p className="job-posted">{job.postedAt}</p>
       </div>
 
       <button className="save-button" aria-label="Save job">

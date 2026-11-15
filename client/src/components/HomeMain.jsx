@@ -26,8 +26,8 @@ function HomeMain() {
   // Search logic
   const filteredJobs = jobs.filter((job) => {
     const searchContent = `
-      ${job.job_title}
-      ${job.employer_name}
+      ${job.title}
+      ${job.company}
     `.toLowerCase();
 
     return searchContent.includes(activeSearch.toLowerCase());
@@ -256,7 +256,7 @@ function HomeMain() {
 
           {!loading &&
             !error &&
-            filteredJobs.map((job) => <JobCard key={job.job_id} job={job} />)}
+            filteredJobs.map((job) => <JobCard key={job.id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}

@@ -8,7 +8,5 @@ export async function fetchJobs() {
   }
 
   const data = await response.json();
-  console.log(data.jobs);
-
-  return data.jobs.jobs;
+  return data.jobs;
 }
