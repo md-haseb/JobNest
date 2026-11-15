@@ -11,6 +11,21 @@ function HomeMain() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
+  const [selectedEmploymentTypes, setSelectedEmploymentTypes] = useState([]);
+  const [appliedEmploymentTypes, setAppliedEmploymentTypes] = useState([]);
+
+  //handle employment type filter
+  const handleEmploymentTypeChange = (e) => {
+    const { checked, value } = e.target;
+
+    if (checked) {
+      setSelectedEmploymentTypes((prev) => [...prev, value]);
+    } else {
+      setSelectedEmploymentTypes((prev) =>
+        prev.filter((type) => type !== value),
+      );
+    }
+  };
 
   // Search button handler
   function handleSearch(e) {
@@ -24,14 +39,32 @@ function HomeMain() {
   }
 
   // Search logic
+  // const filteredJobs = jobs.filter((job) => {
+  //   const searchContent = `
+  //     ${job.title}
+  //     ${job.company}
+  //   `.toLowerCase();
+
+  //   return searchContent.includes(activeSearch.toLowerCase());
+  // });
   const filteredJobs = jobs.filter((job) => {
     const searchContent = `
-      ${job.title}
-      ${job.company}
-    `.toLowerCase();
+    ${job.title}
+    ${job.company}
+  `.toLowerCase();
 
-    return searchContent.includes(activeSearch.toLowerCase());
+    const matchesSearch = searchContent.includes(activeSearch.toLowerCase());
+
+    const matchesEmploymentType =
+      appliedEmploymentTypes.length === 0 ||
+      appliedEmploymentTypes.includes(job.employmentType);
+
+    return matchesSearch && matchesEmploymentType;
   });
+
+  const handleApplyFilters = () => {
+    setAppliedEmploymentTypes(selectedEmploymentTypes);
+  };
 
   useEffect(() => {
     async function loadJobs() {
@@ -68,22 +101,42 @@ function HomeMain() {
             <h3>Employment Type</h3>
 
             <label className="filter-option">
-              <input type="checkbox" name="employmentType" value="FULLTIME" />
+              <input
+                type="checkbox"
+                value="FULLTIME"
+                checked={selectedEmploymentTypes.includes("FULLTIME")}
+                onChange={handleEmploymentTypeChange}
+              />
               <span>Full-time</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="employmentType" value="PARTTIME" />
+              <input
+                type="checkbox"
+                value="PARTTIME"
+                checked={selectedEmploymentTypes.includes("PARTTIME")}
+                onChange={handleEmploymentTypeChange}
+              />
               <span>Part-time</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="employmentType" value="CONTRACTOR" />
+              <input
+                type="checkbox"
+                value="CONTRACT"
+                checked={selectedEmploymentTypes.includes("CONTRACT")}
+                onChange={handleEmploymentTypeChange}
+              />
               <span>Contract</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="employmentType" value="INTERN" />
+              <input
+                type="checkbox"
+                value="INTERN"
+                checked={selectedEmploymentTypes.includes("INTERN")}
+                onChange={handleEmploymentTypeChange}
+              />
               <span>Internship</span>
             </label>
           </div>
@@ -188,7 +241,11 @@ function HomeMain() {
 
           {/* apply filter button */}
           <div className="filter-actions">
-            <button type="button" className="filter-apply-btn">
+            <button
+              type="button"
+              className="filter-apply-btn"
+              onClick={handleApplyFilters}
+            >
               Apply Filters
             </button>
           </div>
