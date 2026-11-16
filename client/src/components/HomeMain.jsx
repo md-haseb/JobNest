@@ -107,7 +107,7 @@ function HomeMain() {
                 checked={selectedEmploymentTypes.includes("FULLTIME")}
                 onChange={handleEmploymentTypeChange}
               />
-              <span>Full-time</span>
+              <span>Full Time</span>
             </label>
 
             <label className="filter-option">
@@ -117,7 +117,7 @@ function HomeMain() {
                 checked={selectedEmploymentTypes.includes("PARTTIME")}
                 onChange={handleEmploymentTypeChange}
               />
-              <span>Part-time</span>
+              <span>Part Time</span>
             </label>
 
             <label className="filter-option">

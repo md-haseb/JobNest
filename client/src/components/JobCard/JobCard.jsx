@@ -1,6 +1,13 @@
 import "./JobCard.css";
 import { Bookmark, Building2 } from "lucide-react";
 
+const employmentTypeLabels = {
+  FULLTIME: "Full-Time",
+  PARTTIME: "Part-Time",
+  CONTRACT: "Contract",
+  INTERN: "Internship",
+};
+
 function JobCard({ job }) {
   return (
     <article className="job-card">
@@ -24,7 +31,7 @@ function JobCard({ job }) {
                 ? `${job.location.city}, Bangladesh`
                 : "Bangladesh"}
             </span>
-            <span>{job.employmentType || "Full Time"}</span>
+            <span>{employmentTypeLabels[job.employmentType] || ""}</span>
             <span>{job.experienceLevel || ""}</span>
           </div>
         </div>
