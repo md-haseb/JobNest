@@ -1,4 +1,7 @@
 const normalizeJob = (job) => {
+  console.log(job.job_highlights);
+  console.log(job.job_highlights?.Qualifications);
+  console.log(job);
   return {
     id: job.job_id,
     title: job.job_title || "",
@@ -17,7 +20,7 @@ const normalizeJob = (job) => {
       extractEmploymentType(job.job_description) ||
       null,
 
-    experienceLevel: "",
+    experienceLevel: extractSeniority(job.job_title, job.job_description) || "",
 
     salary: {
       salary: job.job_salary ?? null,
@@ -26,6 +29,7 @@ const normalizeJob = (job) => {
     },
 
     description: job.job_description || "",
+    qualifications: job.job_highlights?.Qualifications || [],
     applyLink: job.job_apply_link || "",
     postedAt: job.job_posted_at || "",
     postedAtUTC: job.job_posted_at_datetime_utc ?? null,
@@ -83,3 +87,61 @@ const extractEmploymentType = (description) => {
 
   return uniqueMatches.length === 1 ? uniqueMatches[0] : null;
 };
+
+function extractSeniority(title = "", description = "") {
+  const normalizedTitle = title.toLowerCase();
+  const normalizedDescription = description.toLowerCase();
+
+  // 1. Check job title first (strongest signal)
+  const seniorityPatterns = [
+    {
+      level: "internship",
+      pattern: /\b(intern|internship|trainee)\b/i,
+    },
+    {
+      level: "entry-level",
+      pattern: /\b(entry[- ]level|fresher|fresh graduate|graduate trainee)\b/i,
+    },
+    {
+      level: "junior",
+      pattern: /\b(junior|jr\.?)\b/i,
+    },
+    {
+      level: "mid-level",
+      pattern: /\b(mid[- ]level|intermediate)\b/i,
+    },
+    {
+      level: "senior",
+      pattern: /\b(senior|sr\.?)\b/i,
+    },
+    {
+      level: "lead",
+      pattern: /\b(tech lead|team lead|lead developer|lead engineer)\b/i,
+    },
+    {
+      level: "principal",
+      pattern: /\b(principal)\b/i,
+    },
+    {
+      level: "director",
+      pattern: /\b(director|head of)\b/i,
+    },
+  ];
+
+  // 2. Search title first
+  for (const item of seniorityPatterns) {
+    if (item.pattern.test(normalizedTitle)) {
+      return item.level;
+    }
+  }
+
+  // 3. Search description if title has no explicit seniority
+  for (const item of seniorityPatterns) {
+    if (item.pattern.test(normalizedDescription)) {
+      return item.level;
+    }
+  }
+
+  // 4. No explicit seniority found
+  return null;
+}
