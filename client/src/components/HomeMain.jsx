@@ -149,27 +149,24 @@ function HomeMain() {
               <input
                 type="checkbox"
                 name="experienceLevel"
-                value="no_experience"
+                value="entry_level"
               />
-              <span>No experience</span>
+              <span>Entry Level</span>
             </label>
 
             <label className="filter-option">
-              <input
-                type="checkbox"
-                name="experienceLevel"
-                value="under_3_years_experience"
-              />
-              <span>Under 3 years</span>
+              <input type="checkbox" name="experienceLevel" value="junior" />
+              <span>Junior</span>
             </label>
 
             <label className="filter-option">
-              <input
-                type="checkbox"
-                name="experienceLevel"
-                value="more_than_3_years_experience"
-              />
-              <span>More than 3 years</span>
+              <input type="checkbox" name="experienceLevel" value="mid_level" />
+              <span>Mid Level</span>
+            </label>
+
+            <label className="filter-option">
+              <input type="checkbox" name="experienceLevel" value="senior" />
+              <span>Senior</span>
             </label>
           </div>
 

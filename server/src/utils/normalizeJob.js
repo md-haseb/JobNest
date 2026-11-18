@@ -136,12 +136,144 @@ function extractSeniority(title = "", description = "") {
   }
 
   // 3. Search description if title has no explicit seniority
+  // for (const item of seniorityPatterns) {
+  //   if (item.pattern.test(normalizedDescription)) {
+  //     return item.level;
+  //   }
+  // }
+  return extractSeniorityFromDescription(normalizedDescription);
+
+  // 4. No explicit seniority found
+  return null;
+}
+
+function extractSeniorityFromDescription(description = "") {
+  if (!description) return null;
+
+  // 1. Define explicit seniority terms
+  const seniorityPatterns = [
+    {
+      level: "internship",
+      pattern: String.raw`intern(?:ship)?|trainee`,
+    },
+    {
+      level: "entry-level",
+      pattern: String.raw`entry[- ]level|graduate[- ]level`,
+    },
+    {
+      level: "junior",
+      pattern: String.raw`junior(?:[- ]level)?|jr\.?`,
+    },
+    {
+      level: "mid-level",
+      pattern: String.raw`mid[- ]level|intermediate[- ]level`,
+    },
+    {
+      level: "senior",
+      pattern: String.raw`senior(?:[- ]level)?|sr\.?`,
+    },
+    {
+      level: "lead",
+      pattern: String.raw`lead(?:[- ]level)?`,
+    },
+    {
+      level: "principal",
+      pattern: String.raw`principal`,
+    },
+    {
+      level: "director",
+      pattern: String.raw`director`,
+    },
+  ];
+
+  // 2. Job-role keywords
+  const rolePattern = String.raw`(?:(?:frontend|front-end|backend|back-end|full[- ]stack|software|web|technical|engineering|react|node\.?js|python|java|angular|dotnet|\.net)\s+){0,3}(?:developer|engineer|architect|designer|programmer|manager|specialist|consultant)`;
+
+  // 3. Identify relevant sections
+  const lines = description.split(/\r?\n/);
+
+  const relevantSections = [
+    "job overview",
+    "role overview",
+    "job context",
+    "about the role",
+    "about the position",
+    "job highlights",
+    "we are looking for",
+    "requirements",
+    "qualifications",
+    "what we need from you",
+    "position summary",
+  ];
+
+  let currentSection = "";
+  const sections = {};
+
+  for (const line of lines) {
+    const heading = line
+      .trim()
+      .replace(/^[•*#-]\s*/, "")
+      .replace(/:$/, "")
+      .trim()
+      .toLowerCase();
+
+    if (relevantSections.includes(heading)) {
+      currentSection = heading;
+      sections[currentSection] ??= [];
+      continue;
+    }
+
+    if (currentSection) {
+      sections[currentSection].push(line);
+    }
+  }
+
+  // 4. Check explicit position-identification phrases
   for (const item of seniorityPatterns) {
-    if (item.pattern.test(normalizedDescription)) {
+    const roleRegex = new RegExp(
+      String.raw`\b(?:${item.pattern})\s+${rolePattern}\b`,
+      "i",
+    );
+
+    const explicitPhrases = [
+      // We are looking for a Senior Developer
+      new RegExp(
+        String.raw`\b(?:we are looking for|we're looking for|we seek|we are seeking|we're seeking|hiring|seeking)\s+(?:an?\s+)?${roleRegex.source}`,
+        "i",
+      ),
+
+      // As a Mid-Level Software Engineer
+      new RegExp(
+        String.raw`\b(?:as|for)\s+(?:an?\s+)?${roleRegex.source}`,
+        "i",
+      ),
+
+      // Senior Developer position
+      new RegExp(
+        String.raw`${roleRegex.source}\s+(?:position|role|opening|vacancy)\b`,
+        "i",
+      ),
+
+      // This is a senior-level position
+      new RegExp(
+        String.raw`\b(?:this|the)\s+(?:is\s+)?(?:an?\s+)?${item.pattern}\s+(?:role|position|job)\b`,
+        "i",
+      ),
+    ];
+
+    // Search the complete description for strong phrases
+    if (explicitPhrases.some((regex) => regex.test(description))) {
+      return item.level;
+    }
+
+    // 5. Special handling for "We are looking for" section.
+    // A standalone "Senior Developer" bullet is acceptable here.
+    const hiringSection = sections["we are looking for"]?.join(" ");
+
+    if (hiringSection && roleRegex.test(hiringSection)) {
       return item.level;
     }
   }
 
-  // 4. No explicit seniority found
   return null;
 }
