@@ -88,108 +88,74 @@ const extractEmploymentType = (description) => {
   return uniqueMatches.length === 1 ? uniqueMatches[0] : null;
 };
 
+const seniorityPatterns = [
+  {
+    level: "internship",
+    pattern: String.raw`intern(?:ship)?|trainee`,
+  },
+  {
+    level: "entry-level",
+    pattern: String.raw`entry[- ]level|fresher|fresh graduate|graduate[- ]level|graduate trainee`,
+  },
+  {
+    level: "junior",
+    pattern: String.raw`junior(?:[- ]level)?|jr\.?`,
+  },
+  {
+    level: "mid-level",
+    pattern: String.raw`mid[- ]level|intermediate(?:[- ]level)?`,
+  },
+  {
+    level: "senior",
+    pattern: String.raw`senior(?:[- ]level)?|sr\.?`,
+  },
+  {
+    level: "lead",
+    pattern: String.raw`tech lead|team lead|lead(?:[- ]level)?|lead developer|lead engineer`,
+  },
+  {
+    level: "principal",
+    pattern: String.raw`principal`,
+  },
+  {
+    level: "director",
+    pattern: String.raw`director|head of`,
+  },
+];
+
 function extractSeniority(title = "", description = "") {
   const normalizedTitle = title.toLowerCase();
   const normalizedDescription = description.toLowerCase();
 
   // 1. Check job title first (strongest signal)
-  const seniorityPatterns = [
-    {
-      level: "internship",
-      pattern: /\b(intern|internship|trainee)\b/i,
-    },
-    {
-      level: "entry-level",
-      pattern: /\b(entry[- ]level|fresher|fresh graduate|graduate trainee)\b/i,
-    },
-    {
-      level: "junior",
-      pattern: /\b(junior|jr\.?)\b/i,
-    },
-    {
-      level: "mid-level",
-      pattern: /\b(mid[- ]level|intermediate)\b/i,
-    },
-    {
-      level: "senior",
-      pattern: /\b(senior|sr\.?)\b/i,
-    },
-    {
-      level: "lead",
-      pattern: /\b(tech lead|team lead|lead developer|lead engineer)\b/i,
-    },
-    {
-      level: "principal",
-      pattern: /\b(principal)\b/i,
-    },
-    {
-      level: "director",
-      pattern: /\b(director|head of)\b/i,
-    },
-  ];
-
-  // 2. Search title first
   for (const item of seniorityPatterns) {
-    if (item.pattern.test(normalizedTitle)) {
+    const regex = new RegExp(`\\b(?:${item.pattern})\\b`, "i");
+
+    if (regex.test(normalizedTitle)) {
       return item.level;
     }
   }
 
-  // 3. Search description if title has no explicit seniority
-  // for (const item of seniorityPatterns) {
-  //   if (item.pattern.test(normalizedDescription)) {
-  //     return item.level;
-  //   }
-  // }
-  return extractSeniorityFromDescription(normalizedDescription);
+  // 2. Search description if title has no explicit seniority
+  const descriptionSeniority = extractSeniorityFromDescription(
+    normalizedDescription,
+  );
 
-  // 4. No explicit seniority found
-  return null;
+  if (descriptionSeniority) {
+    return descriptionSeniority;
+  }
+
+  // 3. Check required years of experience
+  return extractSeniorityFromExperienceYears(normalizedDescription);
 }
 
 function extractSeniorityFromDescription(description = "") {
   if (!description) return null;
 
-  // 1. Define explicit seniority terms
-  const seniorityPatterns = [
-    {
-      level: "internship",
-      pattern: String.raw`intern(?:ship)?|trainee`,
-    },
-    {
-      level: "entry-level",
-      pattern: String.raw`entry[- ]level|graduate[- ]level`,
-    },
-    {
-      level: "junior",
-      pattern: String.raw`junior(?:[- ]level)?|jr\.?`,
-    },
-    {
-      level: "mid-level",
-      pattern: String.raw`mid[- ]level|intermediate[- ]level`,
-    },
-    {
-      level: "senior",
-      pattern: String.raw`senior(?:[- ]level)?|sr\.?`,
-    },
-    {
-      level: "lead",
-      pattern: String.raw`lead(?:[- ]level)?`,
-    },
-    {
-      level: "principal",
-      pattern: String.raw`principal`,
-    },
-    {
-      level: "director",
-      pattern: String.raw`director`,
-    },
-  ];
-
-  // 2. Job-role keywords
+  // 1. Job-role keywords
   const rolePattern = String.raw`(?:(?:frontend|front-end|backend|back-end|full[- ]stack|software|web|technical|engineering|react|node\.?js|python|java|angular|dotnet|\.net)\s+){0,3}(?:developer|engineer|architect|designer|programmer|manager|specialist|consultant)`;
 
-  // 3. Identify relevant sections
+  // 2. Identify relevant sections
   const lines = description.split(/\r?\n/);
 
   const relevantSections = [
@@ -228,7 +194,7 @@ function extractSeniorityFromDescription(description = "") {
     }
   }
 
-  // 4. Check explicit position-identification phrases
+  // 3. Check explicit position-identification phrases
   for (const item of seniorityPatterns) {
     const roleRegex = new RegExp(
       String.raw`\b(?:${item.pattern})\s+${rolePattern}\b`,
@@ -266,7 +232,7 @@ function extractSeniorityFromDescription(description = "") {
       return item.level;
     }
 
-    // 5. Special handling for "We are looking for" section.
+    // 4. Special handling for "We are looking for" section.
     // A standalone "Senior Developer" bullet is acceptable here.
     const hiringSection = sections["we are looking for"]?.join(" ");
 
@@ -276,4 +242,167 @@ function extractSeniorityFromDescription(description = "") {
   }
 
   return null;
+}
+
+function getRelevantExperienceText(description = "") {
+  const lines = description.split(/\r?\n/);
+
+  const relevantHeadings = [
+    "requirements",
+    "required qualifications",
+    "qualifications",
+    "work experience",
+    "professional experience",
+    "experience",
+    "experience requirements",
+    "required experience",
+    "job requirements",
+    "what we need from you",
+    "what you bring",
+    "who you are",
+    "who we're looking for",
+    "who we are looking for",
+    "candidate requirements",
+    "technical requirements",
+  ];
+
+  const irrelevantHeadings = [
+    "about us",
+    "about the company",
+    "company overview",
+    "company profile",
+    "company culture",
+    "responsibilities",
+    "job responsibilities",
+    "key responsibilities",
+    "duties and responsibilities",
+    "benefits",
+    "what we offer",
+    "what we provide",
+    "job context",
+  ];
+
+  let isRelevantSection = false;
+  const relevantLines = [];
+
+  for (const line of lines) {
+    const cleanedLine = line
+      .trim()
+      .replace(/^[•*#-]\s*/, "")
+      .toLowerCase();
+
+    const colonIndex = cleanedLine.indexOf(":");
+
+    const heading =
+      colonIndex === -1 ? cleanedLine : cleanedLine.slice(0, colonIndex).trim();
+
+    const inlineContent =
+      colonIndex === -1 ? "" : cleanedLine.slice(colonIndex + 1).trim();
+
+    if (relevantHeadings.includes(heading)) {
+      isRelevantSection = true;
+
+      if (inlineContent) {
+        relevantLines.push(inlineContent);
+      }
+
+      continue;
+    }
+
+    if (irrelevantHeadings.includes(heading)) {
+      isRelevantSection = false;
+      continue;
+    }
+
+    if (isRelevantSection) {
+      relevantLines.push(line);
+    }
+  }
+
+  // Limited fallback for descriptions without recognized headings.
+  if (relevantLines.length === 0) {
+    return lines
+      .filter(
+        (line) =>
+          /\b\d{1,2}\s*\+?\s*(?:years?|yrs?)\b/i.test(line) &&
+          /\b(?:professional|relevant|hands-on)\b/i.test(line) &&
+          /\b(?:development|engineering|software|programming)\b/i.test(line),
+      )
+      .join("\n");
+  }
+
+  return relevantLines.join("\n");
+}
+
+function extractSeniorityFromExperienceYears(description = "") {
+  if (!description) return null;
+
+  const relevantText = getRelevantExperienceText(description);
+
+  if (!relevantText) return null;
+
+  const patterns = [
+    {
+      type: "range",
+      regex:
+        /\b(\d{1,2})\s*(?:-|–|—|to)\s*(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b/gi,
+    },
+    {
+      type: "maximum",
+      regex:
+        /\b(?:maximum|max(?:imum)?(?:\s+of)?|up\s+to)\s*(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b/gi,
+    },
+    {
+      type: "minimum",
+      regex:
+        /\b(?:at\s+least|minimum(?:\s+of)?|min\.?)\s*(\d{1,2})\s*\+?\s*(?:years?|yrs?)\b/gi,
+    },
+    {
+      type: "plus",
+      regex: /\b(\d{1,2})\s*\+\s*(?:years?|yrs?)\b/gi,
+    },
+    {
+      type: "single",
+      regex: /\b(\d{1,2})\s*(?:years?|yrs?)\b/gi,
+    },
+  ];
+
+  const matches = [];
+
+  for (const item of patterns) {
+    for (const match of relevantText.matchAll(item.regex)) {
+      matches.push({
+        type: item.type,
+        index: match.index,
+        min: Number(match[1]),
+        max: item.type === "range" ? Number(match[2]) : null,
+      });
+    }
+  }
+
+  // Use the first experience requirement mentioned.
+  matches.sort((a, b) => a.index - b.index);
+
+  const match = matches[0];
+
+  if (!match) return null;
+
+  // Ignore invalid ranges, such as 5–2 years.
+  if (match.type === "range" && match.max < match.min) {
+    return null;
+  }
+
+  if (match.type === "maximum") {
+    return match.min <= 1 ? "junior" : null;
+  }
+
+  return classifyExperienceYears(match.min);
+}
+
+function classifyExperienceYears(min) {
+  if (min <= 1) return "junior";
+
+  if (min <= 4) return "mid-level";
+
+  return "senior";
 }
