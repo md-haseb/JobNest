@@ -13,6 +13,8 @@ function HomeMain() {
   const [activeSearch, setActiveSearch] = useState("");
   const [selectedEmploymentTypes, setSelectedEmploymentTypes] = useState([]);
   const [appliedEmploymentTypes, setAppliedEmploymentTypes] = useState([]);
+  const [selectedExperienceLevels, setSelectedExperienceLevels] = useState([]);
+  const [appliedExperienceLevels, setAppliedExperienceLevels] = useState([]);
 
   //handle employment type filter
   const handleEmploymentTypeChange = (e) => {
@@ -23,6 +25,19 @@ function HomeMain() {
     } else {
       setSelectedEmploymentTypes((prev) =>
         prev.filter((type) => type !== value),
+      );
+    }
+  };
+
+  // Handle experience level filter
+  const handleExperienceLevelChange = (e) => {
+    const { checked, value } = e.target;
+
+    if (checked) {
+      setSelectedExperienceLevels((prev) => [...prev, value]);
+    } else {
+      setSelectedExperienceLevels((prev) =>
+        prev.filter((level) => level !== value),
       );
     }
   };
@@ -38,15 +53,6 @@ function HomeMain() {
     setActiveSearch("");
   }
 
-  // Search logic
-  // const filteredJobs = jobs.filter((job) => {
-  //   const searchContent = `
-  //     ${job.title}
-  //     ${job.company}
-  //   `.toLowerCase();
-
-  //   return searchContent.includes(activeSearch.toLowerCase());
-  // });
   const filteredJobs = jobs.filter((job) => {
     const searchContent = `
     ${job.title}
@@ -59,11 +65,16 @@ function HomeMain() {
       appliedEmploymentTypes.length === 0 ||
       appliedEmploymentTypes.includes(job.employmentType);
 
-    return matchesSearch && matchesEmploymentType;
+    const matchesExperienceLevel =
+      appliedExperienceLevels.length === 0 ||
+      appliedExperienceLevels.includes(job.experienceLevel);
+
+    return matchesSearch && matchesEmploymentType && matchesExperienceLevel;
   });
 
   const handleApplyFilters = () => {
     setAppliedEmploymentTypes(selectedEmploymentTypes);
+    setAppliedExperienceLevels(selectedExperienceLevels);
   };
 
   useEffect(() => {
@@ -148,24 +159,40 @@ function HomeMain() {
             <label className="filter-option">
               <input
                 type="checkbox"
-                name="experienceLevel"
-                value="entry_level"
+                value="entry-level"
+                checked={selectedExperienceLevels.includes("entry-level")}
+                onChange={handleExperienceLevelChange}
               />
               <span>Entry Level</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="experienceLevel" value="junior" />
+              <input
+                type="checkbox"
+                value="junior"
+                checked={selectedExperienceLevels.includes("junior")}
+                onChange={handleExperienceLevelChange}
+              />
               <span>Junior</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="experienceLevel" value="mid_level" />
+              <input
+                type="checkbox"
+                value="mid-level"
+                checked={selectedExperienceLevels.includes("mid-level")}
+                onChange={handleExperienceLevelChange}
+              />
               <span>Mid Level</span>
             </label>
 
             <label className="filter-option">
-              <input type="checkbox" name="experienceLevel" value="senior" />
+              <input
+                type="checkbox"
+                value="senior"
+                checked={selectedExperienceLevels.includes("senior")}
+                onChange={handleExperienceLevelChange}
+              />
               <span>Senior</span>
             </label>
           </div>
