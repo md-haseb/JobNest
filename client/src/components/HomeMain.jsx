@@ -77,6 +77,14 @@ function HomeMain() {
     setAppliedExperienceLevels(selectedExperienceLevels);
   };
 
+  const handleClearFilters = () => {
+    setSelectedEmploymentTypes([]);
+    setAppliedEmploymentTypes([]);
+
+    setSelectedExperienceLevels([]);
+    setAppliedExperienceLevels([]);
+  };
+
   useEffect(() => {
     async function loadJobs() {
       try {
@@ -102,7 +110,11 @@ function HomeMain() {
             <h2 id="filter-heading">Filters</h2>
           </div>
 
-          <button type="button" className="filter-clear-btn">
+          <button
+            type="button"
+            className="filter-clear-btn"
+            onClick={handleClearFilters}
+          >
             Clear All
           </button>
         </div>
