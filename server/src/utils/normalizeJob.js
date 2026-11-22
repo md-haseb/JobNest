@@ -22,11 +22,23 @@ const normalizeJob = (job) => {
 
     experienceLevel: extractSeniority(job.job_title, job.job_description) || "",
 
-    salary: {
-      salary: job.job_salary ?? null,
-      min: job.job_min_salary ?? null,
-      max: job.job_max_salary ?? null,
-    },
+    // salary: {
+    //   salary: job.job_salary ?? null,
+    //   min: job.job_min_salary ?? null,
+    //   max: job.job_max_salary ?? null,
+    // },
+
+    salary:
+      job.job_salary != null ||
+      job.job_min_salary != null ||
+      job.job_max_salary != null
+        ? {
+            salaryMin: job.job_min_salary ?? job.job_salary ?? null,
+            salaryMax: job.job_max_salary ?? job.job_salary ?? null,
+            currency: null,
+            period: null,
+          }
+        : extractSalary(job.job_description),
 
     description: job.job_description || "",
     qualifications: job.job_highlights?.Qualifications || [],
@@ -405,4 +417,52 @@ function classifyExperienceYears(min) {
   if (min <= 4) return "mid-level";
 
   return "senior";
+}
+
+const salaryKeywords = /\b(salary|compensation|remuneration|pay)\b|বেতন/i;
+
+const salaryPattern =
+  /(?:\b(?:salary|compensation|remuneration|pay)\b|বেতন)\s*(?:range)?\s*[:：•-]?\s*(?:is\s*)?(?:BDT|৳|Tk\.?|Taka)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?(?:\s*(?:-|–|—|to)\s*(?:BDT|৳|Tk\.?|Taka)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?)?/i;
+
+function parseSalaryAmount(amount, suffix) {
+  const number = Number(amount.replace(/,/g, ""));
+
+  return suffix ? number * 1000 : number;
+}
+
+function extractSalary(description = "") {
+  const lines = description.split(/\r?\n/);
+
+  for (const line of lines) {
+    if (!/\b(salary|compensation|remuneration|pay)\b|বেতন/i.test(line)) {
+      continue;
+    }
+
+    const match = line.match(salaryPattern);
+
+    if (!match) continue;
+
+    const salaryMin = parseSalaryAmount(match[1], match[2]);
+
+    const salaryMax = match[3]
+      ? parseSalaryAmount(match[3], match[4])
+      : salaryMin;
+
+    const currency = /BDT|৳|Tk\.?|Taka/i.test(match[0]) ? "BDT" : null;
+
+    const period = /\b(monthly|per month)\b/i.test(line)
+      ? "monthly"
+      : /\b(annual|annually|yearly|per year)\b/i.test(line)
+        ? "yearly"
+        : null;
+
+    return {
+      salaryMin,
+      salaryMax,
+      currency,
+      period,
+    };
+  }
+
+  return null;
 }

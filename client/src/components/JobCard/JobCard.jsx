@@ -39,11 +39,11 @@ function JobCard({ job }) {
 
       <div className="job-extra">
         <p className="job-salary">
-          {job.salary.salary
-            ? job.salary.salary
-            : job.salary.min != null && job.salary.max != null
-              ? `${job.salary.min} - ${job.salary.max}`
-              : "Negotiable"}
+          {job.salary?.salaryMin != null && job.salary?.salaryMax != null
+            ? job.salary.salaryMin === job.salary.salaryMax
+              ? job.salary.salaryMin
+              : `${job.salary.salaryMin} - ${job.salary.salaryMax}`
+            : "Negotiable"}
         </p>
 
         <p className="job-posted">{job.postedAt}</p>
