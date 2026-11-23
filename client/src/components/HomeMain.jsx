@@ -9,12 +9,21 @@ function HomeMain() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
+
   const [selectedEmploymentTypes, setSelectedEmploymentTypes] = useState([]);
   const [appliedEmploymentTypes, setAppliedEmploymentTypes] = useState([]);
+
   const [selectedExperienceLevels, setSelectedExperienceLevels] = useState([]);
   const [appliedExperienceLevels, setAppliedExperienceLevels] = useState([]);
+
+  const [selectedMinSalary, setSelectedMinSalary] = useState("");
+  const [selectedMaxSalary, setSelectedMaxSalary] = useState("");
+
+  const [appliedMinSalary, setAppliedMinSalary] = useState("");
+  const [appliedMaxSalary, setAppliedMaxSalary] = useState("");
 
   //handle employment type filter
   const handleEmploymentTypeChange = (e) => {
@@ -69,12 +78,29 @@ function HomeMain() {
       appliedExperienceLevels.length === 0 ||
       appliedExperienceLevels.includes(job.experienceLevel);
 
-    return matchesSearch && matchesEmploymentType && matchesExperienceLevel;
+    const matchesSalary =
+      (!appliedMinSalary && !appliedMaxSalary) ||
+      (job.salary?.salaryMin != null &&
+        job.salary?.salaryMax != null &&
+        (!appliedMinSalary ||
+          job.salary.salaryMax >= Number(appliedMinSalary)) &&
+        (!appliedMaxSalary ||
+          job.salary.salaryMin <= Number(appliedMaxSalary)));
+
+    return (
+      matchesSearch &&
+      matchesEmploymentType &&
+      matchesExperienceLevel &&
+      matchesSalary
+    );
   });
 
   const handleApplyFilters = () => {
     setAppliedEmploymentTypes(selectedEmploymentTypes);
     setAppliedExperienceLevels(selectedExperienceLevels);
+
+    setAppliedMinSalary(selectedMinSalary);
+    setAppliedMaxSalary(selectedMaxSalary);
   };
 
   const handleClearFilters = () => {
@@ -83,6 +109,12 @@ function HomeMain() {
 
     setSelectedExperienceLevels([]);
     setAppliedExperienceLevels([]);
+
+    setSelectedMinSalary("");
+    setSelectedMaxSalary("");
+
+    setAppliedMinSalary("");
+    setAppliedMaxSalary("");
   };
 
   useEffect(() => {
@@ -263,6 +295,8 @@ function HomeMain() {
                 placeholder="Minimum"
                 min="0"
                 className="filter-input"
+                value={selectedMinSalary}
+                onChange={(e) => setSelectedMinSalary(e.target.value)}
               />
 
               <input
@@ -271,6 +305,8 @@ function HomeMain() {
                 placeholder="Maximum"
                 min="0"
                 className="filter-input"
+                value={selectedMaxSalary}
+                onChange={(e) => setSelectedMaxSalary(e.target.value)}
               />
             </div>
           </div>

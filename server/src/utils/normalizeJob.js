@@ -419,8 +419,6 @@ function classifyExperienceYears(min) {
   return "senior";
 }
 
-const salaryKeywords = /\b(salary|compensation|remuneration|pay)\b|বেতন/i;
-
 const salaryPattern =
   /(?:\b(?:salary|compensation|remuneration|pay)\b|বেতন)\s*(?:range)?\s*[:：•-]?\s*(?:is\s*)?(?:BDT|৳|Tk\.?|Taka)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?(?:\s*(?:-|–|—|to)\s*(?:BDT|৳|Tk\.?|Taka)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?)?/i;
 
