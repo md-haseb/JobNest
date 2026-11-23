@@ -21,6 +21,7 @@ function HomeMain() {
 
   const [selectedMinSalary, setSelectedMinSalary] = useState("");
   const [selectedMaxSalary, setSelectedMaxSalary] = useState("");
+  const [salaryError, setSalaryError] = useState("");
 
   const [appliedMinSalary, setAppliedMinSalary] = useState("");
   const [appliedMaxSalary, setAppliedMaxSalary] = useState("");
@@ -140,6 +141,25 @@ function HomeMain() {
   });
 
   const handleApplyFilters = () => {
+    if (
+      (selectedMinSalary && Number(selectedMinSalary) < 0) ||
+      (selectedMaxSalary && Number(selectedMaxSalary) < 0)
+    ) {
+      setSalaryError("Salary cannot be negative.");
+      return;
+    }
+
+    if (
+      selectedMinSalary &&
+      selectedMaxSalary &&
+      Number(selectedMinSalary) > Number(selectedMaxSalary)
+    ) {
+      setSalaryError("Minimum salary cannot exceed maximum salary.");
+      return;
+    }
+
+    setSalaryError("");
+
     setAppliedEmploymentTypes(selectedEmploymentTypes);
     setAppliedExperienceLevels(selectedExperienceLevels);
 
@@ -168,6 +188,8 @@ function HomeMain() {
 
     setSelectedLocation("");
     setAppliedLocation("");
+
+    setSalaryError("");
   };
 
   useEffect(() => {
@@ -350,7 +372,10 @@ function HomeMain() {
                 min="0"
                 className="filter-input"
                 value={selectedMinSalary}
-                onChange={(e) => setSelectedMinSalary(e.target.value)}
+                onChange={(e) => {
+                  setSelectedMinSalary(e.target.value);
+                  setSalaryError("");
+                }}
               />
 
               <input
@@ -360,9 +385,17 @@ function HomeMain() {
                 min="0"
                 className="filter-input"
                 value={selectedMaxSalary}
-                onChange={(e) => setSelectedMaxSalary(e.target.value)}
+                onChange={(e) => {
+                  setSelectedMaxSalary(e.target.value);
+                  setSalaryError("");
+                }}
               />
             </div>
+            {salaryError && (
+              <p className="salary-error" role="alert">
+                {salaryError}
+              </p>
+            )}
           </div>
 
           {/* apply filter button */}
