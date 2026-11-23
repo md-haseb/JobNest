@@ -25,6 +25,9 @@ function HomeMain() {
   const [appliedMinSalary, setAppliedMinSalary] = useState("");
   const [appliedMaxSalary, setAppliedMaxSalary] = useState("");
 
+  const [selectedDatePosted, setSelectedDatePosted] = useState("all");
+  const [appliedDatePosted, setAppliedDatePosted] = useState("all");
+
   const [sortBy, setSortBy] = useState("newest");
 
   //handle employment type filter
@@ -80,6 +83,11 @@ function HomeMain() {
       appliedExperienceLevels.length === 0 ||
       appliedExperienceLevels.includes(job.experienceLevel);
 
+    const matchesDatePosted = isWithinDatePostedRange(
+      job.postedAtUTC,
+      appliedDatePosted,
+    );
+
     const matchesSalary =
       (!appliedMinSalary && !appliedMaxSalary) ||
       (job.salary?.salaryMin != null &&
@@ -93,7 +101,8 @@ function HomeMain() {
       matchesSearch &&
       matchesEmploymentType &&
       matchesExperienceLevel &&
-      matchesSalary
+      matchesSalary &&
+      matchesDatePosted
     );
   });
 
@@ -124,6 +133,8 @@ function HomeMain() {
 
     setAppliedMinSalary(selectedMinSalary);
     setAppliedMaxSalary(selectedMaxSalary);
+
+    setAppliedDatePosted(selectedDatePosted);
   };
 
   const handleClearFilters = () => {
@@ -138,6 +149,9 @@ function HomeMain() {
 
     setAppliedMinSalary("");
     setAppliedMaxSalary("");
+
+    setSelectedDatePosted("all");
+    setAppliedDatePosted("all");
   };
 
   useEffect(() => {
@@ -298,7 +312,8 @@ function HomeMain() {
               id="date-posted"
               name="datePosted"
               className="filter-select"
-              defaultValue="all"
+              value={selectedDatePosted}
+              onChange={(e) => setSelectedDatePosted(e.target.value)}
             >
               <option value="all">Any time</option>
               <option value="today">Past 24 hours</option>
@@ -447,6 +462,26 @@ function getPostedTime(job) {
   const time = new Date(job.postedAtUTC).getTime();
 
   return Number.isFinite(time) ? time : 0;
+}
+
+const datePostedRanges = {
+  today: 24 * 60 * 60 * 1000,
+  "3days": 3 * 24 * 60 * 60 * 1000,
+  week: 7 * 24 * 60 * 60 * 1000,
+  month: 30 * 24 * 60 * 60 * 1000,
+};
+
+function isWithinDatePostedRange(postedAt, range) {
+  if (range === "all") return true;
+
+  if (!postedAt || !datePostedRanges[range]) return false;
+
+  const postedTime = new Date(postedAt).getTime();
+  const age = Date.now() - postedTime;
+
+  return (
+    Number.isFinite(postedTime) && age >= 0 && age <= datePostedRanges[range]
+  );
 }
 
 export default HomeMain;
