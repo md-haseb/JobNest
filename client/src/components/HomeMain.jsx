@@ -25,6 +25,8 @@ function HomeMain() {
   const [appliedMinSalary, setAppliedMinSalary] = useState("");
   const [appliedMaxSalary, setAppliedMaxSalary] = useState("");
 
+  const [sortBy, setSortBy] = useState("newest");
+
   //handle employment type filter
   const handleEmploymentTypeChange = (e) => {
     const { checked, value } = e.target;
@@ -95,6 +97,27 @@ function HomeMain() {
     );
   });
 
+  const sortedJobs = [...filteredJobs].sort((a, b) => {
+    switch (sortBy) {
+      case "oldest":
+        return getPostedTime(a) - getPostedTime(b);
+
+      case "relevance":
+        if (!activeSearch.trim()) {
+          return getPostedTime(b) - getPostedTime(a);
+        }
+
+        return (
+          getRelevanceScore(b, activeSearch) -
+          getRelevanceScore(a, activeSearch)
+        );
+
+      case "newest":
+      default:
+        return getPostedTime(b) - getPostedTime(a);
+    }
+  });
+
   const handleApplyFilters = () => {
     setAppliedEmploymentTypes(selectedEmploymentTypes);
     setAppliedExperienceLevels(selectedExperienceLevels);
@@ -122,6 +145,7 @@ function HomeMain() {
       try {
         const data = await fetchJobs();
         console.log(data);
+
         setJobs(data);
       } catch (error) {
         setError(error.message);
@@ -362,7 +386,12 @@ function HomeMain() {
 
           <div className="job-sort-container">
             <label htmlFor="job-sort">Sort by</label>
-            <select id="job-sort" name="sort" defaultValue="newest">
+            <select
+              id="job-sort"
+              name="sort"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
               <option value="relevance">Relevance</option>
@@ -385,7 +414,7 @@ function HomeMain() {
 
           {!loading &&
             !error &&
-            filteredJobs.map((job) => <JobCard key={job.id} job={job} />)}
+            sortedJobs.map((job) => <JobCard key={job.id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}
@@ -395,6 +424,29 @@ function HomeMain() {
       </section>
     </main>
   );
+}
+
+function getRelevanceScore(job, searchTerm) {
+  const query = searchTerm.trim().toLowerCase();
+
+  const title = job.title.toLowerCase();
+  const company = job.company.toLowerCase();
+
+  if (!query) return 0;
+
+  if (title === query) return 3;
+
+  if (title.includes(query)) return 2;
+
+  if (company.includes(query)) return 1;
+
+  return 0;
+}
+
+function getPostedTime(job) {
+  const time = new Date(job.postedAtUTC).getTime();
+
+  return Number.isFinite(time) ? time : 0;
 }
 
 export default HomeMain;
