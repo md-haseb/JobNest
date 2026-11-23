@@ -28,6 +28,9 @@ function HomeMain() {
   const [selectedDatePosted, setSelectedDatePosted] = useState("all");
   const [appliedDatePosted, setAppliedDatePosted] = useState("all");
 
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [appliedLocation, setAppliedLocation] = useState("");
+
   const [sortBy, setSortBy] = useState("newest");
 
   //handle employment type filter
@@ -88,6 +91,14 @@ function HomeMain() {
       appliedDatePosted,
     );
 
+    const matchesLocation =
+      !appliedLocation ||
+      (appliedLocation === "Remote"
+        ? job.location?.isRemote === true
+        : (
+            cityAliases[appliedLocation] || [appliedLocation.toLowerCase()]
+          ).some((city) => job.location?.city?.toLowerCase().includes(city)));
+
     const matchesSalary =
       (!appliedMinSalary && !appliedMaxSalary) ||
       (job.salary?.salaryMin != null &&
@@ -102,7 +113,8 @@ function HomeMain() {
       matchesEmploymentType &&
       matchesExperienceLevel &&
       matchesSalary &&
-      matchesDatePosted
+      matchesDatePosted &&
+      matchesLocation
     );
   });
 
@@ -135,6 +147,7 @@ function HomeMain() {
     setAppliedMaxSalary(selectedMaxSalary);
 
     setAppliedDatePosted(selectedDatePosted);
+    setAppliedLocation(selectedLocation);
   };
 
   const handleClearFilters = () => {
@@ -152,6 +165,9 @@ function HomeMain() {
 
     setSelectedDatePosted("all");
     setAppliedDatePosted("all");
+
+    setSelectedLocation("");
+    setAppliedLocation("");
   };
 
   useEffect(() => {
@@ -287,13 +303,12 @@ function HomeMain() {
               id="job-location"
               name="location"
               className="filter-select"
-              defaultValue=""
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
             >
-              <option value="" disabled>
-                Select location
-              </option>
+              <option value="">Select location</option>
               <option value="Barisal">Barisal</option>
-              <option value="Chattogram">Chattogram</option>
+              <option value="Chittagong">Chittagong</option>
               <option value="Dhaka">Dhaka</option>
               <option value="Khulna">Khulna</option>
               <option value="Mymensingh">Mymensingh</option>
@@ -397,7 +412,9 @@ function HomeMain() {
 
         {/* 2. Results toolbar */}
         <div className="job-results-toolbar">
-          <p className="job-results-count">120 jobs found</p>
+          <p className="job-results-count">
+            {loading ? "Loading jobs..." : `Showing ${sortedJobs.length} jobs`}
+          </p>
 
           <div className="job-sort-container">
             <label htmlFor="job-sort">Sort by</label>
@@ -423,7 +440,7 @@ function HomeMain() {
 
           {error && <p>{error}</p>}
 
-          {!loading && !error && filteredJobs.length === 0 && (
+          {!loading && !error && sortedJobs.length === 0 && (
             <p>No jobs found.</p>
           )}
 
@@ -433,9 +450,11 @@ function HomeMain() {
         </div>
 
         {/* 4. Load more jobs */}
-        <div className="load-more-container">
-          <button type="button">Load More Jobs</button>
-        </div>
+        {!loading && !error && sortedJobs.length > 0 && (
+          <div className="load-more-container">
+            <button type="button">Load More Jobs</button>
+          </div>
+        )}
       </section>
     </main>
   );
@@ -483,5 +502,10 @@ function isWithinDatePostedRange(postedAt, range) {
     Number.isFinite(postedTime) && age >= 0 && age <= datePostedRanges[range]
   );
 }
+
+const cityAliases = {
+  Barisal: ["barisal", "barishal"],
+  Chittagong: ["chittagong", "chattogram"],
+};
 
 export default HomeMain;
