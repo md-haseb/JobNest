@@ -10,6 +10,8 @@ function HomeMain() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [visibleCount, setVisibleCount] = useState(10);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSearch, setActiveSearch] = useState("");
 
@@ -64,11 +66,13 @@ function HomeMain() {
   function handleSearch(e) {
     e.preventDefault();
     setActiveSearch(searchTerm.trim());
+    setVisibleCount(10);
   }
 
   function handleClearSearch() {
     setSearchTerm("");
     setActiveSearch("");
+    setVisibleCount(10);
   }
 
   const filteredJobs = jobs.filter((job) => {
@@ -140,6 +144,8 @@ function HomeMain() {
     }
   });
 
+  const visibleJobs = sortedJobs.slice(0, visibleCount);
+
   const handleApplyFilters = () => {
     if (
       (selectedMinSalary && Number(selectedMinSalary) < 0) ||
@@ -168,6 +174,8 @@ function HomeMain() {
 
     setAppliedDatePosted(selectedDatePosted);
     setAppliedLocation(selectedLocation);
+
+    setVisibleCount(10);
   };
 
   const handleClearFilters = () => {
@@ -190,6 +198,8 @@ function HomeMain() {
     setAppliedLocation("");
 
     setSalaryError("");
+
+    setVisibleCount(10);
   };
 
   useEffect(() => {
@@ -479,13 +489,18 @@ function HomeMain() {
 
           {!loading &&
             !error &&
-            sortedJobs.map((job) => <JobCard key={job.id} job={job} />)}
+            visibleJobs.map((job) => <JobCard key={job.id} job={job} />)}
         </div>
 
         {/* 4. Load more jobs */}
-        {!loading && !error && sortedJobs.length > 0 && (
+        {!loading && !error && visibleCount < sortedJobs.length && (
           <div className="load-more-container">
-            <button type="button">Load More Jobs</button>
+            <button
+              type="button"
+              onClick={() => setVisibleCount((prev) => prev + 10)}
+            >
+              Load More Jobs
+            </button>
           </div>
         )}
       </section>

@@ -35,8 +35,8 @@ app.get("/jobs", async (req, res) => {
 
     url.searchParams.append("query", "developer jobs in Bangladesh");
     url.searchParams.append("country", "bd");
-    url.searchParams.append("num_pages", "1");
-    url.searchParams.append("date_posted", "month");
+    url.searchParams.append("num_pages", "3");
+    // url.searchParams.append("date_posted", "month");
 
     const response = await fetch(url, {
       method: "GET",
